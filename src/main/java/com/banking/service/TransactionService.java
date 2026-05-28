@@ -21,7 +21,7 @@ public class TransactionService {
     @Autowired
     private AccountRepository accountRepository;
 
-    // ✅ Deposit Money
+    //  Deposit Money
     public String deposit(Long accountId, TransactionRequest request) {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new RuntimeException("Account not found!"));
@@ -42,7 +42,7 @@ public class TransactionService {
         return "Deposited successfully! New Balance: " + account.getBalance();
     }
 
-    // ✅ Withdraw Money
+    //  Withdraw Money
     public String withdraw(Long accountId, TransactionRequest request) {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new RuntimeException("Account not found!"));
@@ -68,7 +68,7 @@ public class TransactionService {
         return "Withdrawn successfully! New Balance: " + account.getBalance();
     }
 
-    // ✅ Transfer Money
+    // Transfer Money
     public String transfer(Long fromAccountId, TransactionRequest request) {
         Account fromAccount = accountRepository.findById(fromAccountId)
                 .orElseThrow(() -> new RuntimeException("Account not found!"));
@@ -111,7 +111,7 @@ public class TransactionService {
         return "Transfer successful! New Balance: " + fromAccount.getBalance();
     }
 
-    // ✅ Get Transaction History
+    //  Get Transaction History
     public List<Transaction> getTransactionHistory(Long accountId) {
         return transactionRepository.findByAccountId(accountId);
     }

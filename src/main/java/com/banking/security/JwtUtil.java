@@ -1,16 +1,16 @@
-
 package com.banking.security;
-
-import java.security.Key;
-import java.util.Date;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import java.security.Key;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class JwtUtil {
@@ -21,27 +21,38 @@ public class JwtUtil {
     @Value("${jwt.expiration}")
     private long expiration;
 
-    // ✅ Generate Token
-    public String generateToken(String email) {
+    //  Generate Token with userId
+    public String generateToken(String email, Long userId) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", userId);  // ✅ store userId in token
+
         return Jwts.builder()
+                .setClaims(claims)
                 .setSubject(email)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .setExpiration(
+                    new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    // ✅ Get Email from Token
+    //  Get Email from Token
     public String extractEmail(String token) {
         return getClaims(token).getSubject();
     }
 
-    // ✅ Validate Token
-    public boolean validateToken(String token, String email) {
-        return extractEmail(token).equals(email) && !isTokenExpired(token);
+    // Get UserId from Token
+    public Long extractUserId(String token) {
+        return ((Number) getClaims(token)
+                .get("userId")).longValue();
     }
 
-    // ✅ Check Expiry
+    //  Validate Token
+    public boolean validateToken(String token, String email) {
+        return extractEmail(token).equals(email)
+                && !isTokenExpired(token);
+    }
+
     private boolean isTokenExpired(String token) {
         return getClaims(token).getExpiration().before(new Date());
     }

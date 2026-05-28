@@ -1,6 +1,5 @@
 package com.banking.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -10,20 +9,33 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.banking.repo.UserRepository;
 
+/**
+ * Configuration class for JWT authentication and password encoding.
+ */
 @Configuration
 public class JwtConfig {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    // ✅ Load User from Database
+    // Constructor Injection
+    public JwtConfig(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    /**
+     * Loads user details from database using email.
+     */
     @Bean
     public UserDetailsService userDetailsService() {
+
         return email -> {
+
             com.banking.model.User user = userRepository
                     .findByEmail(email)
-                    .orElseThrow(() -> new UsernameNotFoundException(
-                            "User not found with email: " + email));
+                    .orElseThrow(() ->
+                            new UsernameNotFoundException(
+                                    "User not found with email: " + email
+                            ));
 
             return org.springframework.security.core.userdetails.User
                     .builder()
@@ -34,7 +46,9 @@ public class JwtConfig {
         };
     }
 
-    // ✅ Password Encoder
+    /**
+     * BCrypt password encoder bean.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

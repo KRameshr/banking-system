@@ -17,58 +17,82 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.banking.security.JwtFilter;
 
+/**
+ * Security configuration class.
+ * 
+ * Handles: - JWT authentication - Route authorization - Session management -
+ * Security filters
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private JwtFilter jwtFilter;
+	@Autowired
+	private JwtFilter jwtFilter;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+	@Autowired
+	private UserDetailsService userDetailsService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .cors(cors -> cors.disable())
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                    "/auth/register",
-                    "/auth/login",
-                    "/swagger-ui/**",
-                    "/swagger-ui.html",
-                    "/api-docs/**",
-                    "/api-docs",
-                    "/v3/api-docs/**",
-                    "/v3/api-docs"
-                ).permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
-            )
-            .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-            .addFilterBefore(jwtFilter,
-                UsernamePasswordAuthenticationFilter.class);
+	/**
+	 * Configure application security rules.
+	 */
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        return http.build();
-    }
+		http
 
-    @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider provider =
-                new DaoAuthenticationProvider(userDetailsService);
-        provider.setPasswordEncoder(passwordEncoder);
-        return provider;
-    }
+				// Enable CORS
+				.cors(cors -> {
+				})
 
-    @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
+				// Disable CSRF for REST APIs
+				.csrf(csrf -> csrf.disable())
+
+				// Configure request authorization
+				.authorizeHttpRequests(auth -> auth
+
+						// Public endpoints
+						.requestMatchers("/auth/register", "/auth/login", "/swagger-ui/**", "/swagger-ui.html",
+								"/api-docs/**", "/api-docs", "/v3/api-docs/**", "/v3/api-docs")
+						.permitAll()
+
+						// Admin-only endpoints
+						.requestMatchers("/admin/**").hasRole("ADMIN")
+
+						// All other endpoints require authentication
+						.anyRequest().authenticated())
+
+				// Use stateless session management
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+				// Add JWT filter before username/password filter
+				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
+		return http.build();
+	}
+
+	/**
+	 * Authentication provider configuration.
+	 */
+	@Bean
+	public AuthenticationProvider authenticationProvider() {
+
+		DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
+
+		provider.setPasswordEncoder(passwordEncoder);
+
+		return provider;
+	}
+
+	/**
+	 * Authentication manager bean.
+	 */
+	@Bean
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+
+		return config.getAuthenticationManager();
+	}
 }

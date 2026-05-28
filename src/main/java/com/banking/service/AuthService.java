@@ -30,7 +30,7 @@ public class AuthService {
     @Autowired
     private JwtUtil jwtUtil;
 
-    // ✅ Register
+    //  Register
     public String register(RegisterRequest request) {
 
         // Check if email already exists
@@ -57,23 +57,25 @@ public class AuthService {
                "Account Number: " + account.getAccountNumber();
     }
 
-    // ✅ Login
+   
+    
+ //  Login - pass userId to token
     public String login(LoginRequest request) {
-
-        // Find user by email
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found!"));
 
-        // Check password
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(
+                request.getPassword(), user.getPassword())) {
             throw new RuntimeException("Invalid password!");
         }
 
-        // Generate JWT token
-        return jwtUtil.generateToken(user.getEmail());
+        // pass both email and userId
+        return jwtUtil.generateToken(user.getEmail(), user.getId());
     }
+    
+   
 
-    // ✅ Generate Account Number
+    //  Generate Account Number
     private String generateAccountNumber() {
         return "ACC" + UUID.randomUUID()
                            .toString()
