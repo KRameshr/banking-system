@@ -3,7 +3,8 @@ package com.banking.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Lazy; 
+import org.springframework.context.annotation.Profile; // ◄── ADDED FOR ENVIRONMENT ISOLATION
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -15,21 +16,22 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import com.banking.security.JwtFilter;
 
 @Configuration
 @EnableWebSecurity
-@Profile("!test")
+@Profile("!test") 
 public class SecurityConfig {
 
     @Autowired
     private JwtFilter jwtFilter;
 
     @Autowired
+    @Lazy 
     private UserDetailsService userDetailsService;
 
     @Autowired
+    @Lazy 
     private PasswordEncoder passwordEncoder;
 
     private static final String[] PUBLIC_URLS = {
@@ -43,19 +45,21 @@ public class SecurityConfig {
         "/v3/api-docs"
     };
 
-   
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .cors(cors -> {})
-            .csrf(csrf -> csrf.disable())
+            .csrf(csrf -> csrf.disable()) 
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(PUBLIC_URLS).permitAll()
+                .requestMatchers(PUBLIC_URLS).permitAll() 
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated())
+                .anyRequest().authenticated()
+            )
             .sessionManagement(session ->
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+            
         return http.build();
     }
 

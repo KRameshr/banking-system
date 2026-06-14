@@ -15,12 +15,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
-/**
- * Controller class for expense management APIs.
- * 
- * Handles: - Adding expenses - Fetching expense history - Viewing budget
- * summary
- */
+
 @RestController
 @RequestMapping("/expense")
 @Tag(name = "Expense", description = "Expense management APIs")
@@ -29,13 +24,6 @@ public class ExpenseController {
 	@Autowired
 	private ExpenseService expenseService;
 
-	/**
-	 * Add a new expense for an account.
-	 *
-	 * @param accountId Account ID
-	 * @param request   Expense request data
-	 * @return Success message
-	 */
 	@Operation(summary = "Add expense")
 	@PostMapping("/add/{accountId}")
 	public ResponseEntity<String> addExpense(@PathVariable Long accountId, @Valid @RequestBody ExpenseRequest request) {
@@ -45,12 +33,7 @@ public class ExpenseController {
 		return ResponseEntity.ok(response);
 	}
 
-	/**
-	 * Fetch all expenses for an account.
-	 *
-	 * @param accountId Account ID
-	 * @return List of expenses
-	 */
+	
 	@Operation(summary = "Get all expenses")
 	@GetMapping("/list/{accountId}")
 	public ResponseEntity<List<Expense>> getExpenses(@PathVariable Long accountId) {
@@ -60,12 +43,7 @@ public class ExpenseController {
 		return ResponseEntity.ok(expenses);
 	}
 
-	/**
-	 * Fetch budget summary for an account.
-	 *
-	 * @param accountId Account ID
-	 * @return Budget summary details
-	 */
+	
 	@Operation(summary = "Get budget summary")
 	@GetMapping("/summary/{accountId}")
 	public ResponseEntity<Map<String, Object>> getSummary(@PathVariable Long accountId) {

@@ -9,9 +9,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.banking.repo.UserRepository;
 
-/**
- * Configuration class for JWT authentication and password encoding.
- */
 @Configuration
 public class JwtConfig {
 
@@ -22,9 +19,6 @@ public class JwtConfig {
         this.userRepository = userRepository;
     }
 
-    /**
-     * Loads user details from database using email.
-     */
     @Bean
     public UserDetailsService userDetailsService() {
 
@@ -46,9 +40,6 @@ public class JwtConfig {
         };
     }
 
-    /**
-     * BCrypt password encoder bean.
-     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

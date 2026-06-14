@@ -14,12 +14,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
-/**
- * Controller class for transaction management APIs.
- * 
- * Handles: - Deposit operations - Withdraw operations - Money transfers -
- * Transaction history
- */
 @RestController
 @RequestMapping("/transaction")
 @Tag(name = "Transaction", description = "Transaction management APIs")
@@ -28,13 +22,6 @@ public class TransactionController {
 	@Autowired
 	private TransactionService transactionService;
 
-	/**
-	 * Deposit money into an account.
-	 *
-	 * @param accountId Account ID
-	 * @param request   Transaction request data
-	 * @return Success message
-	 */
 	@Operation(summary = "Deposit money")
 	@PostMapping("/deposit/{accountId}")
 	public ResponseEntity<String> deposit(@PathVariable Long accountId,
@@ -45,13 +32,6 @@ public class TransactionController {
 		return ResponseEntity.ok(response);
 	}
 
-	/**
-	 * Withdraw money from an account.
-	 *
-	 * @param accountId Account ID
-	 * @param request   Transaction request data
-	 * @return Success message
-	 */
 	@Operation(summary = "Withdraw money")
 	@PostMapping("/withdraw/{accountId}")
 	public ResponseEntity<String> withdraw(@PathVariable Long accountId,
@@ -62,13 +42,7 @@ public class TransactionController {
 		return ResponseEntity.ok(response);
 	}
 
-	/**
-	 * Transfer money to another account.
-	 *
-	 * @param fromAccountId Sender account ID
-	 * @param request       Transaction request data
-	 * @return Success message
-	 */
+
 	@Operation(summary = "Transfer money to another account")
 	@PostMapping("/transfer/{fromAccountId}")
 	public ResponseEntity<String> transfer(@PathVariable Long fromAccountId,
@@ -79,12 +53,7 @@ public class TransactionController {
 		return ResponseEntity.ok(response);
 	}
 
-	/**
-	 * Fetch transaction history for an account.
-	 *
-	 * @param accountId Account ID
-	 * @return List of transactions
-	 */
+	
 	@Operation(summary = "Get transaction history")
 	@GetMapping("/history/{accountId}")
 	public ResponseEntity<List<Transaction>> getHistory(@PathVariable Long accountId) {

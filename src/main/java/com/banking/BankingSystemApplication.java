@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * 
  * This class bootstraps and launches the application.
  */
+
 @SpringBootApplication
 public class BankingSystemApplication {
 

@@ -4,6 +4,9 @@ server:
 spring:
   application:
     name: BANKING-SYSTEM
+  main:
+    lazy-initialization: true
+    allow-bean-definition-overriding: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${DB_URL:jdbc:mysql://localhost:3306/banking_db}
@@ -12,11 +15,8 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    generate-ddl: true
+    open-in-view: false 
     show-sql: false
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
 
 jwt:
   secret: ${JWT_SECRET:bankingsystemsecretkey1234567890abcdefghij}
@@ -25,7 +25,8 @@ jwt:
 springdoc:
   api-docs:
     path: /api-docs
-    version: OPENAPI_3_0
+    enabled: true
   swagger-ui:
     path: /swagger-ui.html
+    enabled: true
     disable-swagger-default-url: true

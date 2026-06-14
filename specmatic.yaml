@@ -1,4 +1,21 @@
-sources:
-  - provider: "web"
+version: 3
+systemUnderTest:
+  service:
+    $ref: "#/components/services/bankingService"
+specmatic:
+  settings:
     test:
-      - "http://localhost:8080/api-docs"
+      schemaResiliencyTests: all
+components:
+  services:
+    bankingService:
+      description: ValueMeters Banking API
+      definitions:
+        - definition:
+            source:
+              filesystem:
+                directory: .
+            specs:
+              - spec:
+                  path: openapi.json
+                  type: openapi
